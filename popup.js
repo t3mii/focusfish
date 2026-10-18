@@ -9,6 +9,8 @@ const siteCount = document.getElementById("siteCount");
 const addSiteForm = document.getElementById("addSiteForm");
 const siteInput = document.getElementById("siteInput");
 const siteMessage = document.getElementById("siteMessage");
+const cameraButton = document.getElementById("cameraButton");
+const cameraStatus = document.getElementById("cameraStatus");
 
 let currentState = {
   sessionActive: false,
@@ -187,6 +189,34 @@ function renderSites() {
     siteList.appendChild(item);
   }
 }
+
+function renderCamera(on) {
+  cameraStatus.textContent = on ? "Camera on" : "Camera off";
+  cameraStatus.classList.toggle("on", on);
+  cameraButton.textContent = on ? "Pause camera" : "Turn camera on";
+  cameraButton.setAttribute("aria-pressed", on);
+}
+
+chrome.storage.local.get("cameraOn", ({ cameraOn }) => renderCamera(!!cameraOn));
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.cameraOn) renderCamera(!!changes.cameraOn.newValue);
+});
+
+cameraButton.addEventListener("click", async () => {
+  const { cameraOn } = await chrome.storage.local.get("cameraOn");
+
+  if (cameraOn) {
+    let reply = null;
+    try { reply = await chrome.runtime.sendMessage({ type: "CAMERA_STOP" }); } catch (e) {}
+    if (!reply?.ok) chrome.storage.local.set({ cameraOn: false }); // vision tab is gone, so reset
+    return;
+  }
+
+  const url = chrome.runtime.getURL("vision.html");
+  const [existing] = await chrome.tabs.query({ url });
+  if (existing) chrome.runtime.sendMessage({ type: "CAMERA_START" });
+  else chrome.tabs.create({ url });
+});
 
 async function refreshState() {
   try {

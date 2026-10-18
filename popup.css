@@ -275,3 +275,16 @@ footer {
 .history-list li strong {
   font-size: 12px;
 }
+
+.camera-row { 
+  display: flex; align-items: center; justify-content: space-between; margin-top: 12px; 
+}
+.camera-status { 
+  font-size: 13px; 
+}
+.camera-status.on::before { 
+  content: "● "; color: #e5484d; 
+} /* visible "camera is on" cue */
+.secondary-button { 
+  padding: 6px 12px; border-radius: 8px; border: 1px solid currentColor; background: transparent; cursor: pointer; 
+}

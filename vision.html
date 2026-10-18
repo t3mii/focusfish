@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FocusFish Camera</title>
+</head>
+<body>
+  <h1>FocusFish is tracking your focus 🐟</h1>
+  <p>Video stays on your device. You can pause anytime.</p>
+  <video id="cam" muted playsinline width="480"></video>
+  <p id="status">Loading...</p>
+  <p id="error" role="alert"></p>
+  <button id="toggle">Pause camera</button>
+
+  <script type="module" src="vision.js"></script>
+</body>
+</html>
