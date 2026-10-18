@@ -201,3 +201,77 @@ footer {
   color: #7a918a;
   font-size: 11px;
 }
+
+.report-section {
+  margin-top: 22px;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.stat-card {
+  min-width: 0;
+  padding: 10px 6px;
+  background: white;
+  border: 1px solid #dcece7;
+  border-radius: 10px;
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #71847f;
+  font-size: 10px;
+}
+
+.stat-card strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.report-section h3 {
+  margin: 18px 0 8px;
+  font-size: 13px;
+}
+
+.activity-list,
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activity-list li,
+.history-list li {
+  padding: 9px 10px;
+  margin-bottom: 6px;
+  background: white;
+  border: 1px solid #e1ece8;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.activity-row span:last-child {
+  white-space: nowrap;
+  color: #52766d;
+}
+
+.history-meta {
+  margin-top: 5px;
+  color: #71847f;
+  font-size: 11px;
+}
+
+.history-list li strong {
+  font-size: 12px;
+}

@@ -15,17 +15,20 @@ const EMPTY_STATS = {
   blockedAttempts: 0
 };
 
+  
 async function getState() {
-  return chrome.storage.local.get({
+  return await chrome.storage.local.get({
     sessionActive: false,
     blockedSites: DEFAULT_SITES,
     sessionStartedAt: null,
     sessionStats: EMPTY_STATS,
+    sessionHistory: [],
     trackingDomain: null,
     trackingCheckpointAt: null,
     browserIdle: false
   });
 }
+
 
 function isValidDomain(site) {
   return typeof site === "string" &&
@@ -163,8 +166,42 @@ async function startSession() {
   });
 }
 
+
 async function stopSession() {
+  const beforeStop = await getState();
+
+  // Don't create a log if no session is active.
+  if (!beforeStop.sessionActive) {
+    await updateBlockingRules([], false);
+    await chrome.alarms.clear(TRACKING_ALARM);
+    return;
+  }
+
   await recordActivity();
+
+  // Read the final stats after recording elapsed time.
+  const finalState = await getState();
+  const endedAt = Date.now();
+
+  const session = {
+    id: `${beforeStop.sessionStartedAt}-${endedAt}`,
+    startedAt: beforeStop.sessionStartedAt,
+    endedAt,
+    durationMs: endedAt - beforeStop.sessionStartedAt,
+    stats: {
+      ...finalState.sessionStats,
+      siteTimeMs: {
+        ...(finalState.sessionStats?.siteTimeMs || {})
+      }
+    }
+  };
+
+  const history = finalState.sessionHistory || [];
+
+  await chrome.storage.local.set({
+    sessionHistory: [session, ...history].slice(0, 20)
+  });
+
   await updateBlockingRules([], false);
   await chrome.alarms.clear(TRACKING_ALARM);
 
@@ -175,6 +212,7 @@ async function stopSession() {
     trackingCheckpointAt: null
   });
 }
+
 
 async function updateSites(sites) {
   if (

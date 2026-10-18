@@ -27,6 +27,109 @@ function formatTime(milliseconds) {
     .join(":");
 }
 
+function formatShortTime(milliseconds) {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  if (minutes >= 60) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  }
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function formatDate(timestamp) {
+  return new Date(timestamp).toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function renderReport(state) {
+  const stats = state.sessionStats || {};
+  const siteTimes = stats.siteTimeMs || {};
+
+  const elapsed = state.sessionActive && state.sessionStartedAt
+    ? Date.now() - state.sessionStartedAt
+    : 0;
+
+  document.getElementById("reportDuration").textContent =
+    formatShortTime(elapsed);
+
+  document.getElementById("reportIdle").textContent =
+    formatShortTime(stats.idleTimeMs || 0);
+
+  document.getElementById("reportBlocked").textContent =
+    stats.blockedAttempts || 0;
+
+  const activityList = document.getElementById("activityList");
+  activityList.replaceChildren();
+
+  const entries = Object.entries(siteTimes)
+    .sort((a, b) => b[1] - a[1]);
+
+  if (entries.length === 0) {
+    const item = document.createElement("li");
+    item.textContent = state.sessionActive
+      ? "Browsing activity is being recorded..."
+      : "Start a session to track website activity.";
+    activityList.appendChild(item);
+  } else {
+    for (const [domain, milliseconds] of entries) {
+      const item = document.createElement("li");
+      const row = document.createElement("div");
+      row.className = "activity-row";
+
+      const name = document.createElement("span");
+      name.textContent = domain;
+
+      const duration = document.createElement("span");
+      duration.textContent = formatShortTime(milliseconds);
+
+      row.append(name, duration);
+      item.appendChild(row);
+      activityList.appendChild(item);
+    }
+  }
+
+  const historyList = document.getElementById("historyList");
+  const historyEmpty = document.getElementById("historyEmpty");
+  historyList.replaceChildren();
+
+  const history = state.sessionHistory || [];
+  historyEmpty.hidden = history.length > 0;
+
+  for (const session of history) {
+    const item = document.createElement("li");
+
+    const title = document.createElement("strong");
+    title.textContent = formatDate(session.startedAt);
+
+    const duration = document.createElement("div");
+    duration.className = "history-meta";
+    duration.textContent =
+      `Duration: ${formatShortTime(session.durationMs)}`;
+
+    const siteCount = Object.keys(
+      session.stats?.siteTimeMs || {}
+    ).length;
+
+    const details = document.createElement("div");
+    details.className = "history-meta";
+    details.textContent =
+      `${siteCount} website(s) visited · ` +
+      `${session.stats?.blockedAttempts || 0} blocked attempt(s)`;
+
+    item.append(title, duration, details);
+    historyList.appendChild(item);
+  }
+}
+
 function renderTimer() {
   if (!currentState.sessionActive || !currentState.sessionStartedAt) {
     timer.textContent = "00:00:00";
@@ -98,6 +201,7 @@ async function refreshState() {
     currentState = state;
     renderSession();
     renderSites();
+    renderReport(currentState);
   } catch (error) {
     statusText.textContent = "Couldn't load session";
     sessionMessage.textContent = error.message;
@@ -172,4 +276,14 @@ addSiteForm.addEventListener("submit", async event => {
 });
 
 refreshState();
-setInterval(renderTimer, 1000);
+setInterval(() => {
+  renderTimer();
+
+  if (currentState.sessionActive) {
+    renderReport(currentState);
+  }
+  if (currentState.sessionActive) {
+    refreshState();
+  }
+  
+}, 1000);

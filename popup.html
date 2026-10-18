@@ -56,7 +56,38 @@
 
       <ul id="siteList" class="site-list"></ul>
       <p id="siteMessage" class="site-message" aria-live="polite"></p>
-    </section>
+    
+<section class="report-section">
+  <h2>Focus Report</h2>
+  <p class="helper-text">Your focus journey, one session at a time.</p>
+
+  <div class="report-grid">
+    <div class="stat-card">
+      <span class="stat-label">Session time</span>
+      <strong id="reportDuration">00:00</strong>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Idle time</span>
+      <strong id="reportIdle">00:00</strong>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Blocked attempts</span>
+      <strong id="reportBlocked">0</strong>
+    </div>
+  </div>
+
+  <h3>Website activity</h3>
+  <ul id="activityList" class="activity-list"></ul>
+
+  <h3>Recent sessions</h3>
+  <ul id="historyList" class="history-list"></ul>
+  <p id="historyEmpty" class="helper-text">
+    Your completed sessions will appear here.
+  </p>
+</section>
+
 
     <footer>
       Small steps. Better focus. 🌊
