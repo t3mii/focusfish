@@ -3,12 +3,15 @@
   "name": "FocusFish",
   "version": "0.1.0",
   "description": "A friendly focus companion that helps you avoid distracting websites.",
-  "permissions": [
-    "storage",
-    "tabs",
-    "idle",
-    "declarativeNetRequest"
-  ],
+  
+"permissions": [
+  "storage",
+  "tabs",
+  "idle",
+  "alarms",
+  "declarativeNetRequest"
+]
+,
   "host_permissions": [
     "<all_urls>"
   ],
