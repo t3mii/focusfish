@@ -102,10 +102,12 @@ async function start() {
     stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
     video.srcObject = stream;
     await video.play();
+    document.body.dataset.state = "loading";
     toggle.textContent = "Pause camera";
     errorEl.textContent = "";
     chrome.storage.local.set({ cameraOn: true });
   } catch (e) {
+    document.body.dataset.state = "paused";
     console.error(e);
     errorEl.textContent = e.name === "NotAllowedError"
       ? "Camera blocked. Click the camera icon in the address bar to allow it."
@@ -142,6 +144,7 @@ function stop() {
   toggle.textContent = "Turn camera on";
   if (events.length) setState("paused");
   chrome.storage.local.set({ cameraOn: false });
+  document.body.dataset.state = "paused";
 }
 
 toggle.addEventListener("click", () => (stream ? stop() : start()));

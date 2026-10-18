@@ -2,16 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FocusFish Camera</title>
+  <link rel="stylesheet" href="vision.css">
 </head>
-<body>
-  <h1>FocusFish is tracking your focus 🐟</h1>
-  <p>Video stays on your device. You can pause anytime.</p>
-  <video id="cam" muted playsinline width="480"></video>
-  <p id="status">Loading...</p>
-  <p id="error" role="alert"></p>
-  <button id="toggle">Pause camera</button>
+<body data-state="loading">
+  <main class="wrap">
+    <header class="header">
+      <div class="fish">🐟</div>
+      <div>
+        <h1>FocusFish</h1>
+        <p class="subtitle">Find your focus. Ride the flow.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="video-frame">
+        <video id="cam" muted playsinline></video>
+        <span class="live-badge">● Camera on</span>
+      </div>
+
+      <div class="status-pill"><span class="dot"></span><span id="status">Loading...</span></div>
+      <p id="error" role="alert"></p>
+
+      <button id="toggle" class="primary-button">Pause camera</button>
+      <p class="privacy">🔒 Video stays on your device and is never recorded or uploaded.</p>
+    </section>
+
+    <footer>Small steps. Better focus. 🌊</footer>
+  </main>
 
   <script type="module" src="vision.js"></script>
 </body>
 </html>
+
+<div class="fish-face" aria-hidden="true">
+  <svg viewBox="0 0 220 150" width="220" height="150">
+    <!-- tail -->
+    <polygon points="165,75 205,40 205,110" fill="#ff8a65"/>
+    <!-- body -->
+    <ellipse cx="95" cy="75" rx="75" ry="52" fill="#2ec4b6"/>
+    <!-- top fin -->
+    <path d="M70 28 Q95 5 125 30 Z" fill="#1fa79a"/>
+    <!-- cheek -->
+    <circle cx="55" cy="92" r="9" fill="#ff8a65" opacity="0.6"/>
+    <!-- sleepy closed eye -->
+    <path d="M45 65 Q58 76 71 65" stroke="#0b2a43" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- mouth -->
+    <path d="M30 88 Q38 96 48 90" stroke="#0b2a43" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- bubbles -->
+    <circle cx="22" cy="55" r="6" fill="none" stroke="#e8f7fa" stroke-width="2"/>
+    <circle cx="10" cy="38" r="4" fill="none" stroke="#e8f7fa" stroke-width="2"/>
+  </svg>
+  <p class="nap-text">Camera paused. FocusFish is napping 💤</p>
+</div>
